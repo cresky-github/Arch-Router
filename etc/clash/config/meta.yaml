@@ -233,7 +233,7 @@ dns:
   nameserver: ['udp://127.0.0.1']
   # 指定域名查询的解析服务器，可使用 geosite, 优先于 nameserver/fallback 查询
   # 并发查询，无法保证顺序，以下仅作为书写演示，建议根据自己需求写
-  # nameserver-policy: {"rule-set:DIRECT-DOMAIN": ['tcp://119.29.29.29']}
+  nameserver-policy: {"rule-set:DIRECT-DOMAIN": ['tcp://119.29.29.29']}
   # 代理节点域名解析服务器,仅用于解析代理节点的域名
   # 当proxy里的server为域名时，使用该列表里的dns服务器解析。
   # 当配置文件无此字段的时候，使用 nameserver 列表里的dns解析；
