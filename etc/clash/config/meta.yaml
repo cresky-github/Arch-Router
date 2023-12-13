@@ -1,0 +1,454 @@
+# 代理端口
+# 端口是计算机或路由交换机内部的一部分，计算机按照 INTERNET 传输层 TCP/IP 协议进行通信，不同的协议对应不同的端口
+# http(s) 代理端口
+port: 7890
+# socks4/4a/5 代理端口
+socks-port: 7891
+# 混合代理端口 http(s)+socks
+mixed-port: 7892
+# redirect 端口仅限 Linux 以及 macOS 适用
+# redirect 透明代理端口，仅能代理 TCP 流量
+redir-port: 7893
+# tproxy 透明代理端口，可以代理 TCP 以及 UDP 流量
+# tproxy 端口仅限 linux 适用 (Android 设备属于 Linux 设备）
+tproxy-port: 7894
+
+
+#ebpf配置
+#ebpf:
+  # redirect 模式，仅支持 TCP
+  # auto-redir: [eth0]
+  # UDP+TCP 使用该功能请勿启用 auto-route
+  # redirect-to-tun: [eth0]
+
+# 允许局域网
+# 允许其他设备经过 Clash 的代理端口访问互联网
+# 可选值 true/false
+allow-lan: true
+
+# Tun 配置
+tun:
+  # 可选值 true/false
+  enable: false
+  # 可选值
+  #   system 
+  #   gvisor
+  #   lwip
+  stack: system
+  # dns-hijack:
+    #- 0.0.0.0:53 # 需要劫持的 DNS
+  # auto-detect-interface: true # 自动识别出口网卡
+  # auto-route: true # 配置路由表
+  # mtu: 9000 # 最大传输单元
+  # strict-route: true # 将所有连接路由到tun来防止泄漏，但你的设备将无法其他设备被访问
+  # inet4-route-address: # 启用 auto_route 时使用自定义路由而不是默认路由
+    #- 0.0.0.0/1
+    #- 128.0.0.0/1
+  # inet6-route-address: # 启用 auto_route 时使用自定义路由而不是默认路由
+    #- "::/1"
+    #- "8000::/1"
+  # endpoint-independent-nat: false # 启用独立于端点的 NAT
+  # include-uid: # UID 规则仅在 Linux 下被支持，并且需要 auto_route
+  # - 0
+  # include-uid-range: # 限制被路由的的用户范围
+  # - 1000-99999
+  # exclude-uid: # 排除路由的的用户
+  #- 1000
+  # exclude-uid-range: # 排除路由的的用户范围
+  # - 1000-99999
+
+  # Android 用户和应用规则仅在 Android 下被支持
+  # 并且需要 auto-route
+
+  # include-android-user: # 限制被路由的 Android 用户
+  # - 0
+  # - 10
+  # include-package: # 限制被路由的 Android 应用包名
+  # - com.android.chrome
+  # exclude-package: # 排除被路由的 Android 应用包名
+  # - com.android.captiveportallogin
+
+# 绑定 IP, 通过 LAN 访问一个/一些特定的 IP 地址
+# "*" 绑定所有 IP 地址，默认值，不填写此项则绑定全部
+# 192.168.31.31: 绑定单个 IPV4 地址
+# "[aaaa::a8aa:ff:fe09:57d8]": 绑定单个 IPV6 地址
+# bind-address: "*"
+
+# http(s) 和 socks 代理的用户验证
+# authentication:
+#   - "user1:pass1"
+#   - "user2:pass2"
+# authentication: [""]
+
+# 运行模式
+#   rule    规则匹配
+#   global  全局代理(需要在GLOBAL策略组选择代理/策略)
+#   direct  全局直连
+# 此项拥有默认值，默认为规则模式
+mode: rule
+
+# 日志级别
+# Clash 内核输出日志的等级，仅在控制台和控制页面输出
+#   silent    静默，不输出
+#   error     仅输出发生错误至无法使用的日志
+#   warning   输出发生错误但不影响运行的日志，以及 error 级别内容
+#   info      输出一般运行的内容，以及 error 和 warning 级别的日志
+#   debug     尽可能的输出运行中所有的信息
+log-level: info
+
+# IPv6
+# 是否允许内核接受 IPv6 流量
+# 可选值 true/false,默认为 false
+ipv6: false
+
+# 外部控制 (API)
+# 外部控制器，可以使用 RESTful API 来控制你的 Clash 内核
+# API 监听地址，你可以将 127.0.0.1 修改为 0.0.0.0 来监听所有 IP
+external-controller: :65305
+# 外部用户界面
+# 可以将静态网页资源（比如 Clash-dashboard) 运行在 Clash API, 路径为 API 地址/ui
+# 可以为绝对路径，或者 Clash 工作目录的相对路径
+external-ui: ui
+# HTTPS-API 监听地址，需要配置 tls 部分证书和其私钥配置，使用 TLS 也必须填写 external-controller
+# external-controller-tls: 127.0.0.1:9443
+# API 的访问密钥
+secret: Meta_9184
+
+experimental: {ignore-resolve-fail: true, interface-name: en0}
+
+# [Meta专属]
+# 域名嗅探器
+# Clash使用Mapping机制解决透明代理情况下,无法通过Redir端口传递域名的问题；
+# 但此机制会导致如果不使用Clash内置的DNS解析服务,就无法准确还原域名,进行域名分流的问题。
+# Meta内置了Sniffer域名嗅器,通过读取握手包内的域名字段,将IP还原成域名,有效解决Mapping机制的短板。
+sniffer:
+  # 嗅探器开关
+  enable: true
+  # 开启后对 redir-host 类型识别的流量进行强制嗅探
+  # 包含 Tun、Redir 和 TProxy 或 DNS 为 redir-host
+  force-dns-mapping: true
+  # 对所有未获取到域名的流量进行强制嗅探
+  parse-pure-ip: false
+  # 是否使用嗅探结果作为实际访问,默认 true
+  # 全局配置,优先级低于 sniffer.sniff 实际配置
+  override-destination: false
+  sniff:
+    # TLS 默认如果不配置 ports 默认嗅探 443
+    TLS:
+      ports: [443, 8443]
+    # 需要嗅探的端口, 默认嗅探 80
+    HTTP:
+      ports: [80, 8080-8880]
+      # 可覆盖 sniffer.override-destination
+      override-destination: true
+  #force-domain:
+  #  - +.v2ex.com
+  # 白名单,跳过嗅探结果
+  #skip-domain:
+  #  - Mijia Cloud
+
+store-selected: true
+
+# 进程匹配模式
+# 控制是否让 Clash 去匹配进程
+#   always    开启，强制匹配所有进程
+#   strict    默认，由 Clash 判断是否开启
+#   off       不匹配进程，推荐在路由器上使用此模式
+find-process-mode: always
+
+# [Meta专属]
+# 统一延迟
+# 更换延迟计算方式,去除握手等额外延迟
+# 可选值 true/false
+unified-delay: false
+
+# [Meta专属]
+# 启用TCP并发
+# 可选值 true/false
+tcp-concurrent: true
+
+# 全局客户端指纹
+# 全局 TLS 指纹，优先低于 proxy 内的 client-fingerprint。
+# 目前支持开启 TLS 传输的 TCP/grpc/WS/HTTP , 支持协议有 VLESS,Vmess 和 trojan.
+# 可选："chrome", "firefox", "safari", "iOS", "android", "edge", "360"," qq", "random"
+# 若选择 "random", 则按 Cloudflare Radar 数据按概率生成一个现代浏览器指纹。
+# global-client-fingerprint: chrome
+
+# [Meta专属]
+# GEO数据模式
+# 更改geoip使用文件,mmdb或者dat,可选 true / false,
+#   true    dat
+#   false   默认值,使用mmdb数据库
+geodata-mode: true
+# GEO文件加载模式
+# 可选的加载模式如下
+#     standard          标准加载器
+#     memconservative   专为内存受限(小内存)设备优化的加载器(默认值)
+geodata-loader: standard
+# 自定 GEO 下载地址
+geox-url:
+  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+
+
+# 启用UDP
+udp: true
+
+
+# 缓存设置(文件位置./cache.db)
+# 在 Clash 官方中，profile 应为扩展配置，但在 Clash.meta, 仅作为缓存项使用
+# 可选值 true/false
+profile:
+  # 储存 API 对策略组的选择，以供下次启动时使用
+  # 节点状态记忆（若不同配置有同代理名称,设置值共享）
+  store-selected: false
+  # fake-ip缓存
+  # 储存 fakeip 映射表，域名再次发生连接时，使用原有映射地址
+  store-fake-ip: true
+
+dns:
+  # DNS是否启用(false/true)
+  enable: true
+  # 开启(false/true) DoH 支持 HTTP/3，将并发尝试
+  prefer-h3: true
+  # 开启 DNS 服务器监听
+  listen: 0.0.0.0:1053
+  # 查询hosts配置并返回真实IP
+  use-hosts: true
+  # 是否启用IPv6
+  ipv6: false
+  # DNS模式(redir-host/fake-ip)
+  # [Meta专属] - redir-host传递域名，可远程解析
+  enhanced-mode: fake-ip
+  # fake-ip 池设置
+  # 格式为 ip/掩码
+  # tun 网卡的默认 ip 也使用此值
+  fake-ip-range: 198.18.0.0/15
+  # 默认 dns, 用于解析 DNS 服务器 的域名
+  # 必须为 ip, 可为加密 dns
+  default-nameserver: ['udp://127.0.0.1']
+  # 默认的域名解析服务器
+  # 如不配置 fallback/proxy-server-nameserver , 则所有域名都由 nameserver 解析
+  nameserver: ['udp://127.0.0.1']
+  # 指定域名查询的解析服务器，可使用 geosite, 优先于 nameserver/fallback 查询
+  # 并发查询，无法保证顺序，以下仅作为书写演示，建议根据自己需求写
+  # nameserver-policy: {"rule-set:DIRECT-DOMAIN": ['tcp://119.29.29.29']}
+  # 代理节点域名解析服务器,仅用于解析代理节点的域名
+  # 当proxy里的server为域名时，使用该列表里的dns服务器解析。
+  # 当配置文件无此字段的时候，使用 nameserver 列表里的dns解析；
+  # 请务必确保此处的dns无污染，可正常使用，否则节点可能无法连接。
+  proxy-server-nameserver: ['udp://127.0.0.1:53053']
+
+
+
+proxy-provides-define: &PROXY-PROVIDERS
+  type: &TYPE http
+  interval: &INTERVAL 1800
+  health-check: &HEALTH-CHECK
+    enable: true
+    url: &URL-TEST http://www.gstatic.com/generate_204
+    interval: *INTERVAL
+proxy-providers:
+  订阅：1:
+    <<: *PROXY-PROVIDERS
+    url: ''
+    path: './proxy_providers/1.yaml'
+
+  订阅：2:
+    <<: *PROXY-PROVIDERS
+    url: ''
+    path: './proxy_providers/2.yaml'
+
+
+
+# 代理组
+data-define:
+  filter-all: &ALL-FILTER '.*'
+  filter-exclude: &EXCLUDE-FILTER "(?!)(更新|订阅|重置|到期|流量|中国)"
+  filter-gpt: &GPT-FILTER 'gpt|GPT'
+  filter-netflix: &NETFLIX-FILTER '(🇺🇸|美国|洛杉矶|旧金山|加州|UnitedStates).*(奈飞|原生|NF|NETFLIX)'
+  filter-stream-media: &STREAM-MEDIA-FILTER '(🇺🇸|美国|洛杉矶|旧金山|加州|UnitedStates)'
+  filter-hk: &HK-FILTER '(🇭🇰|香港|HongKong)'
+  filter-jp: &JP-FILTER '(🇯🇵|日本|Japan)'
+  filter-sg: &SG-FILTER '(🇸🇬|新加坡|Singapore)'
+  filter-tw: &TW-FILTER '(🇹🇼|台湾)'
+  filter-us: &US-FILTER '(🇺🇸|美国|洛杉矶|旧金山|加州|UnitedStates)'
+  name-apple: &APPLE-NAME 🔸🍎苹果🍎🔸
+  name-dev: &DEV-NAME 🔸🔰DEV🔰🔸
+  name-ent: &ENT-NAME 🔸🔱娱乐🔱🔸
+  name-game: &GAME-NAME 🔸💢游戏💢🔸
+  name-google: &GOOGLE-NAME 🔸☢️谷歌☢️🔸
+  name-gpt: &GPT-NAME 🔸🔳 GPT 🔳🔸
+  name-media: &MEDIA-NAME 🔸📰MEDIA📰🔸
+  name-microsoft: &MICROSOFT-NAME 🔸Ⓜ️微软Ⓜ️🔸
+  name-netflix: &PROXY-NETFLIX-NAME 🔸🎥NETFLIX🎥🔸
+  name-system: &SYSTEM-NAME 🔸🈯系统🈯🔸
+  name-telegram: &TELEGRAM-NAME 🔸✈️电报✈️🔸
+  name-hk: &HK-NAME 🔸🇭🇰香港🇭🇰🔸
+  name-jp: &JP-NAME 🔸🇯🇵日本🇯🇵🔸
+  name-sg: &SG-NAME 🔸🇸🇬新加坡🇸🇬🔸
+  name-tw: &TW-NAME 🔸🇹🇼台湾🇹🇼🔸
+  name-us: &US-NAME 🔸🇺🇸美国🇺🇸🔸
+  interval-group: &INTERVAL-GROUP 300
+  use-group: &PROXIES
+    - 订阅：SDyun
+    #- 订阅：SSTLink
+
+proxy-groups-balance-define: &PROXY-GROUP-BALANCE
+  type: load-balance
+  url: *URL-TEST
+  # 间隔多长时间进行一次测试,单位为秒
+  interval: *INTERVAL-GROUP
+  health-check: *HEALTH-CHECK
+  lazy: false
+  # 禁用该策略组的UDP
+  disable-udp: false
+  #  负载均衡策略
+  #  consistent-hashing 将会把相同顶级域名的请求分配给策略组内的同一个代理节点
+  #  round-robin 将会把所有的请求分配给策略组内不同的代理节点
+  strategy: consistent-hashing
+  use: *PROXIES
+  exclude-filter: *EXCLUDE-FILTER
+  filter: *US-FILTER
+
+proxy-groups-urltest-define: &PROXY-GROUP-URLTEST
+  type: url-test
+  url: *URL-TEST
+  # 间隔多长时间进行一次测试,单位为秒
+  interval: *INTERVAL-GROUP
+  health-check: *HEALTH-CHECK
+  lazy: false
+  # 禁用该策略组的UDP
+  disable-udp: false
+  use: *PROXIES
+  exclude-filter: *EXCLUDE-FILTER
+  filter: *US-FILTER
+
+proxy-stream-media-define: &PROXY-STREAM-MEDIA
+  type: load-balance
+  url: *URL-TEST
+  # 间隔多长时间进行一次测试,单位为秒
+  interval: *INTERVAL-GROUP
+  health-check: *HEALTH-CHECK
+  lazy: false
+  # 禁用该策略组的UDP
+  disable-udp: false
+  #  负载均衡策略
+  #  consistent-hashing 将会把相同顶级域名的请求分配给策略组内的同一个代理节点
+  #  round-robin 将会把所有的请求分配给策略组内不同的代理节点
+  strategy: consistent-hashing
+  use: *PROXIES
+  exclude-filter: *EXCLUDE-FILTER
+  filter: *STREAM-MEDIA-FILTER
+
+proxy-groups:
+  - { name: 🔸💎全部节点💎🔸,   <<: *PROXY-GROUP-BALANCE,   filter: *ALL-FILTER }    
+  - { name: 🔸🈲禁止🈲🔸,       type: url-test,             proxies: [REJECT] }     
+  - { name: 🔸🈳跳过🈳🔸,       type: url-test,             proxies: [PASS] }
+  - { name: 🔸🏠直连🏠🔸,       type: url-test,             proxies: [DIRECT] }
+  - { name: *GPT-NAME,            <<: *PROXY-GROUP-URLTEST,   filter: *GPT-FILTER }
+  - { name: *US-NAME,             <<: *PROXY-GROUP-URLTEST }
+  - { name: *SG-NAME,             <<: *PROXY-GROUP-URLTEST,   filter: *SG-FILTER }
+  - { name: *HK-NAME,             <<: *PROXY-GROUP-URLTEST,   filter: *HK-FILTER }
+  - { name: *TW-NAME,             <<: *PROXY-GROUP-URLTEST,   filter: *TW-FILTER }
+  - { name: *JP-NAME,             <<: *PROXY-GROUP-URLTEST,   filter: *JP-FILTER }
+  - { name: *DEV-NAME,            <<: *PROXY-GROUP-URLTEST }
+  - { name: *MICROSOFT-NAME,      <<: *PROXY-GROUP-URLTEST }
+  - { name: *GOOGLE-NAME,         <<: *PROXY-GROUP-URLTEST }
+  - { name: *APPLE-NAME,          <<: *PROXY-GROUP-URLTEST }
+  - { name: *ENT-NAME,            <<: *PROXY-GROUP-URLTEST }
+  - { name: *MEDIA-NAME,          <<: *PROXY-GROUP-URLTEST }
+  - { name: *GAME-NAME,           <<: *PROXY-GROUP-URLTEST }
+  - { name: *TELEGRAM-NAME,       <<: *PROXY-GROUP-URLTEST,   filter: *HK-FILTER }
+  - { name: *SYSTEM-NAME,         <<: *PROXY-GROUP-URLTEST }
+# 规则集
+rule-providers-define: &RULE-PROVIDES
+  type: *TYPE
+  interval: 300
+  behavior: &BEHAVIOR classical
+  format: &FORMAT yaml
+  # 由于安全问题，此路径将限制只允许在 HomeDir（有启动参数 -d 配置） 中，
+  # 如果想存储到任意位置配置环境变量 `SKIP_SAFE_PATH_CHECK=1`
+  # path可为空(仅限clash.meta 1.15.0以上版本)
+  path: 
+  #【Meta专属】URL可根据rule设定匹配对应的策略，方便更新provider
+  url: 
+rule-providers:
+  TELEGRAM:
+    <<: *RULE-PROVIDES
+    path: './rules_providers/telegram.yaml'
+
+sub-rules:
+  TELEGRAM:
+    - IP-CIDR,91.108.56.0/22,🔸🇸🇬新加坡🇸🇬🔸
+    - IP-CIDR,149.154.168.0/22,🔸🇸🇬新加坡🇸🇬🔸 
+    - IP-CIDR,5.28.192.0/18,🔸✈️电报✈️🔸
+    - GEOIP,telegram,🔸✈️电报✈️🔸
+rules:
+  # DNS 策略 - 开始
+  - IP-CIDR,1.0.0.1/32,🔸🇺🇸美国🇺🇸🔸
+  - IP-CIDR,1.1.1.1/32,🔸🇺🇸美国🇺🇸🔸
+  - IP-CIDR,8.8.4.4/32,🔸🇺🇸美国🇺🇸🔸
+  - IP-CIDR,8.8.8.8/32,🔸🇺🇸美国🇺🇸🔸
+  - IP-CIDR,9.9.9.9/32,🔸🇺🇸美国🇺🇸🔸
+  - IP-CIDR,9.9.9.10/32,🔸🇺🇸美国🇺🇸🔸
+  # DNS 策略 - 结束
+
+  # 拒绝策略 - 开始  #
+  #- GEOSITE,category-ads-all,🔸🈲禁止🈲🔸
+  - GEOSITE,qihoo360,🔸🈲禁止🈲🔸
+  - DOMAIN-SUFFIX,lan,🔸🈲禁止🈲🔸
+  # 拒绝策略 - 结束  #
+
+  # 订阅域名策略 - 开始  #  
+  - DOMAIN-SUFFIX,uuu.glass,🔸🈯系统🈯🔸
+  - DOMAIN-SUFFIX,sttsub.top,🔸🈯系统🈯🔸
+  - DOMAIN-SUFFIX,sdconfig.pro,🔸🈯系统🈯🔸
+  - DOMAIN-SUFFIX,jsy88.net,🔸🈯系统🈯🔸
+  # 订阅域名策略 - 结束  #
+
+  # 域名策略 - 开始  #
+  - GEOSITE,telegram,🔸🇸🇬新加坡🇸🇬🔸
+  - GEOSITE,Zaobao,🔸🇸🇬新加坡🇸🇬🔸
+  - GEOSITE,Openai,🔸🔳 GPT 🔳🔸
+
+  - DOMAIN-SUFFIX,google,🔸☢️谷歌☢️🔸
+  - DOMAIN-SUFFIX,hk,🔸🇭🇰香港🇭🇰🔸
+  - DOMAIN-SUFFIX,tw,🔸🇹🇼台湾🇹🇼🔸
+  - DOMAIN-SUFFIX,jp,🔸🇯🇵日本🇯🇵🔸
+  - DOMAIN-SUFFIX,sg,🔸🇸🇬新加坡🇸🇬🔸
+
+  - GEOSITE,Microsoft,🔸Ⓜ️微软Ⓜ️🔸
+  - GEOSITE,Google,🔸☢️谷歌☢️🔸
+  - GEOSITE,Apple,🔸🍎苹果🍎🔸
+
+  - GEOSITE,Category-games,🔸💢游戏💢🔸
+  - GEOSITE,Category-entertainment,🔸🔱娱乐🔱🔸
+  - GEOSITE,Category-media,🔸📰MEDIA📰🔸
+  - GEOSITE,Category-dev,🔸🔰DEV🔰🔸
+  - GEOSITE,Category-companies,🔸🇺🇸美国🇺🇸🔸
+
+  - GEOSITE,geolocation-!cn,🔸🇺🇸美国🇺🇸🔸
+  - GEOSITE,tld-!cn,🔸🇺🇸美国🇺🇸🔸
+  # 域名策略 - 结束  #
+
+  # fake-ip 兜底策略 - 开始
+  - IP-CIDR,198.18.0.0/15,🔸🇺🇸美国🇺🇸🔸
+  # fake-ip 兜底策略 - 结束
+
+  # Telegram IP策略 - 开始  #
+  - RULE-SET,TELEGRAM,🔸✈️电报✈️🔸
+  # Telegram IP策略 - 结束  #
+
+  # 进程策略 - 开始  #
+  - PROCESS-NAME,firefox,🔸🈲禁止🈲🔸
+  - PROCESS-NAME,meta,🔸🈯系统🈯🔸
+  - PROCESS-NAME,pacman,🔸🈯系统🈯🔸
+  - PROCESS-NAME,smartdns,🔸🈯系统🈯🔸
+  - PROCESS-NAME,AGH_Proxy,🔸🈯系统🈯🔸
+  # 进程策略 - 结束  #
+
+  # 终极策略 - 开始  #
+  - MATCH,🔸🏠直连🏠🔸
+  # 终极策略 - 结束  #
