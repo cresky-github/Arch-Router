@@ -386,27 +386,11 @@ sub-rules:
     - IP-CIDR,5.28.192.0/18,🔸✈️电报✈️🔸
     - GEOIP,telegram,🔸✈️电报✈️🔸
 rules:
-  # DNS 策略 - 开始
-  - IP-CIDR,1.0.0.1/32,🔸🇺🇸美国🇺🇸🔸
-  - IP-CIDR,1.1.1.1/32,🔸🇺🇸美国🇺🇸🔸
-  - IP-CIDR,8.8.4.4/32,🔸🇺🇸美国🇺🇸🔸
-  - IP-CIDR,8.8.8.8/32,🔸🇺🇸美国🇺🇸🔸
-  - IP-CIDR,9.9.9.9/32,🔸🇺🇸美国🇺🇸🔸
-  - IP-CIDR,9.9.9.10/32,🔸🇺🇸美国🇺🇸🔸
-  # DNS 策略 - 结束
-
   # 拒绝策略 - 开始  #
   #- GEOSITE,category-ads-all,🔸🈲禁止🈲🔸
-  - GEOSITE,qihoo360,🔸🈲禁止🈲🔸
-  - DOMAIN-SUFFIX,lan,🔸🈲禁止🈲🔸
+  #- GEOSITE,qihoo360,🔸🈲禁止🈲🔸
+  #- DOMAIN-SUFFIX,lan,🔸🈲禁止🈲🔸
   # 拒绝策略 - 结束  #
-
-  # 订阅域名策略 - 开始  #  
-  - DOMAIN-SUFFIX,uuu.glass,🔸🈯系统🈯🔸
-  - DOMAIN-SUFFIX,sttsub.top,🔸🈯系统🈯🔸
-  - DOMAIN-SUFFIX,sdconfig.pro,🔸🈯系统🈯🔸
-  - DOMAIN-SUFFIX,jsy88.net,🔸🈯系统🈯🔸
-  # 订阅域名策略 - 结束  #
 
   # 域名策略 - 开始  #
   - GEOSITE,telegram,🔸🇸🇬新加坡🇸🇬🔸
