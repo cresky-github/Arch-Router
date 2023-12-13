@@ -112,7 +112,7 @@ external-ui: ui
 # HTTPS-API 监听地址，需要配置 tls 部分证书和其私钥配置，使用 TLS 也必须填写 external-controller
 # external-controller-tls: 127.0.0.1:9443
 # API 的访问密钥
-secret: Meta_9184
+secret: 
 
 experimental: {ignore-resolve-fail: true, interface-name: en0}
 
@@ -292,8 +292,8 @@ data-define:
   name-us: &US-NAME 🔸🇺🇸美国🇺🇸🔸
   interval-group: &INTERVAL-GROUP 300
   use-group: &PROXIES
-    - 订阅：SDyun
-    #- 订阅：SSTLink
+    - 订阅：1
+    #- 订阅：2
 
 proxy-groups-balance-define: &PROXY-GROUP-BALANCE
   type: load-balance
